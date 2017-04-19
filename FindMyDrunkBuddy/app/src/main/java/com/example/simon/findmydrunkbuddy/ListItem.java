@@ -43,6 +43,12 @@ public class ListItem {
         this.password = password;
     }
 
+    @Override
+    public String toString() {
+        return name + '\'' +
+                " duration=" + duration;
+    }
+
     public int getDuration() {
 
         return duration;
