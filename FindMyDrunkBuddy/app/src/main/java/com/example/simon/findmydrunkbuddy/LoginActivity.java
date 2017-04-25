@@ -54,6 +54,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 LocalDatabase.insertUser(db, username, password, id);
 
+                Intent locationIntent = new Intent(LoginActivity.this, LocationUpdaterService.class);
+                locationIntent.putExtra("UserId", id);
+
+                startService(locationIntent);
+
                 Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
                 startActivity(intent);
             }

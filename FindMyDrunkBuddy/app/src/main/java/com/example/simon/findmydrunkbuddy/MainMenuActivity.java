@@ -23,5 +23,10 @@ public class MainMenuActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void myGroups(View view){
+        Intent intent = new Intent(this, MyGroupsActivity.class);
+        startActivity(intent);
+    }
+
 
 }

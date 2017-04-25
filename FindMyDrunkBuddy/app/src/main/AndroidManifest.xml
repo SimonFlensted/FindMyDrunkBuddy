@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-feature android:name="android.hardware.location.gps" />
 
     <application
         android:name="android.support.multidex.MultiDexApplication"
@@ -38,7 +40,6 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity android:name=".MainMenuActivity" />
-
         <activity android:name=".CreateGroupActivity" />
         <activity android:name=".FindGroupActivity" />
         <activity android:name=".LoginActivity">
@@ -48,6 +49,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MyGroupsActivity" />
+        <activity android:name=".GroupActivity" />
+
+        <service
+            android:name=".LocationUpdaterService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

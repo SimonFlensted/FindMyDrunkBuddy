@@ -45,8 +45,6 @@ public class CreateGroupActivity extends AppCompatActivity {
         @Override
         protected Object doInBackground(Object[] params) {
             try {
-
-
                 Class.forName("net.sourceforge.jtds.jdbc.Driver");
                 String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
                 Connection conn = DriverManager.getConnection(ConnURL);

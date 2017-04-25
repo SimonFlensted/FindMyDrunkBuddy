@@ -1,5 +1,6 @@
 package com.example.simon.findmydrunkbuddy;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -36,6 +37,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        Intent intent = getIntent();
+
+        float userLongtitude = intent.getFloatExtra("Longtitude", 0);
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
