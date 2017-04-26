@@ -87,10 +87,7 @@ public class GroupActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(User user) {
                 Intent intent = new Intent(GroupActivity.this, MapsActivity.class);
-                intent.putExtra("Username", user.getName());
-                intent.putExtra("UserId", user.getId());
-                intent.putExtra("Lattitude", user.getLattitude());
-                intent.putExtra("Longtitude", user.getLongtitude());
+                intent.putExtra("User", user);
                 startActivity(intent);
         }
 

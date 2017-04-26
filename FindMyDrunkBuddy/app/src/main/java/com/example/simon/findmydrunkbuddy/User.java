@@ -1,10 +1,12 @@
 package com.example.simon.findmydrunkbuddy;
 
+import java.io.Serializable;
+
 /**
  * Created by Simon on 25-04-2017.
  */
 
-public class User {
+public class User implements Serializable {
     private int id;
     private String name;
     private float lattitude;

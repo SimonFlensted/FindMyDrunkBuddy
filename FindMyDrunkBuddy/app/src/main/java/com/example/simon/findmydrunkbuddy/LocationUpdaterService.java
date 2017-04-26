@@ -1,14 +1,18 @@
 package com.example.simon.findmydrunkbuddy;
 
 import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
@@ -26,85 +30,105 @@ import static android.R.attr.duration;
  * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
-public class LocationUpdaterService extends IntentService {
+public class LocationUpdaterService extends Service {
 
-    public LocationUpdaterService() {
-        super("LocationUpdaterService");
+    private boolean isRunning;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        isRunning = false;
+
+
     }
 
     @Override
-    protected void onHandleIntent(final Intent intent) {
-        Log.d("service", "knep");
-        try {
-            Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
-            Connection conn = DriverManager.getConnection(ConnURL);
-            String sql = "update dbo.users set Lattitude = ?, Longtitude = ? where Id = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setDouble(1, 2);
-            ps.setDouble(2, 3);
-            ps.setInt(3, intent.getIntExtra("UserId", 0));
-            ps.execute();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public int onStartCommand(final Intent intent, int flags, int startId) {
 
-        // Acquire a reference to the system Location Manager
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if (!isRunning) {
+            isRunning = true;
 
-        // Define a listener that responds to location updates
-        LocationListener locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location provider.
-                makeUseOfNewLocation(location);
-            }
 
-            private void makeUseOfNewLocation(Location location) {
-                try {
-                    Class.forName("net.sourceforge.jtds.jdbc.Driver");
-                    String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
-                    Connection conn = DriverManager.getConnection(ConnURL);
-                    String sql = "update dbo.users set Lattitude = ?, Longtitude = ? where Id = ?";
-                    PreparedStatement ps = conn.prepareStatement(sql);
-                    ps.setDouble(1, location.getLatitude());
-                    ps.setDouble(2, location.getLongitude());
-                    ps.setInt(3, intent.getIntExtra("UserId", 0));
-                    ps.execute();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+
+            // Define a listener that responds to location updates
+            LocationListener locationListener = new LocationListener() {
+
+                @Override
+                public void onLocationChanged(Location location) {
+                    // Called when a new location is found by the network location provider.
+                    makeUseOfNewLocation(location);
                 }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+
+                private void makeUseOfNewLocation(Location location) {
+                    new SendLocationTask().execute(location.getLatitude(), location.getLongitude());
+
+                }
+
+                class SendLocationTask extends AsyncTask<Double, Void, Boolean> {
+
+
+                    @Override
+                    protected Boolean doInBackground(Double... params) {
+                        try {
+                            Class.forName("net.sourceforge.jtds.jdbc.Driver");
+                            String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
+                            Connection conn = DriverManager.getConnection(ConnURL);
+                            String sql = "update dbo.users set Lattitude = ?, Longtitude = ? where Id = ?";
+                            PreparedStatement ps = conn.prepareStatement(sql);
+                            ps.setDouble(1, params[0]);
+                            ps.setDouble(2, params[1]);
+                            ps.setInt(3, intent.getIntExtra("UserId", 0));
+                            ps.execute();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        ;
+                        return null;
+                    }
+                }
+
+            };
+
+
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return START_STICKY;
             }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-        };
-
-        // Register the listener with the Location Manager to receive location updates
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            Log.d("test", "test");
-
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            return Service.START_STICKY;
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-
-
-
+        return super.onStartCommand(intent, flags, startId);
     }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
 }

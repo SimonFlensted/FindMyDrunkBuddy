@@ -1,5 +1,7 @@
 package com.example.simon.findmydrunkbuddy;
 
+import android.*;
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -39,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_FINE_LOCATION);
             ActivityCompat.requestPermissions(LoginActivity.this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSIONS_REQUEST_COARSE_LOCATION);
         }
 

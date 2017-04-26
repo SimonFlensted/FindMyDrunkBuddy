@@ -48,7 +48,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                 Class.forName("net.sourceforge.jtds.jdbc.Driver");
                 String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
                 Connection conn = DriverManager.getConnection(ConnURL);
-                String sql = "insert into dbo.groups values (20, ?, ?, ?)";
+                String sql = "insert into dbo.groups (Name, Duration, Password) values(?, ?, ?)";
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, groupName);
                 ps.setInt(2, duration);
