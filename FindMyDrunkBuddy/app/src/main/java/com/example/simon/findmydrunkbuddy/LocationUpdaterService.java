@@ -39,7 +39,7 @@ public class LocationUpdaterService extends IntentService {
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
             String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
             Connection conn = DriverManager.getConnection(ConnURL);
-            String sql = "update dbo.users set Lattitude = ?, Longtitude = ? where userId = ?";
+            String sql = "update dbo.users set Lattitude = ?, Longtitude = ? where Id = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setDouble(1, 2);
             ps.setDouble(2, 3);
@@ -66,7 +66,7 @@ public class LocationUpdaterService extends IntentService {
                     Class.forName("net.sourceforge.jtds.jdbc.Driver");
                     String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
                     Connection conn = DriverManager.getConnection(ConnURL);
-                    String sql = "update dbo.users set Lattitude = ?, Longtitude = ? where userId = ?";
+                    String sql = "update dbo.users set Lattitude = ?, Longtitude = ? where Id = ?";
                     PreparedStatement ps = conn.prepareStatement(sql);
                     ps.setDouble(1, location.getLatitude());
                     ps.setDouble(2, location.getLongitude());
@@ -92,6 +92,8 @@ public class LocationUpdaterService extends IntentService {
         // Register the listener with the Location Manager to receive location updates
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
+            Log.d("test", "test");
+
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
