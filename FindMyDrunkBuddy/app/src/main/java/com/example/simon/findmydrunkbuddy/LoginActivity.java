@@ -106,6 +106,8 @@ public class LoginActivity extends AppCompatActivity {
                 SQLiteOpenHelper databaseHelper = new LocalDatabase(LoginActivity.this);
                 SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
+                LocalDatabase.deletePrevious(db);
+
                 LocalDatabase.insertUser(db, username, password, id);
 
                 Intent locationIntent = new Intent(LoginActivity.this, LocationUpdaterService.class);
@@ -168,22 +170,7 @@ public class LoginActivity extends AppCompatActivity {
     private class RegisterTask extends AsyncTask<String, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(String... params) {
-            try {
-                Class.forName("net.sourceforge.jtds.jdbc.Driver");
-                String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
-                Connection conn = DriverManager.getConnection(ConnURL);
-                String sql = "insert into dbo.users (Username, Password) values (?, ?)";
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setString(1, params[0]);
-                ps.setString(2, params[1]);
-                ps.execute();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
+        protected void onPostExecute(Boolean b){
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
 
             // set prompts.xml to alertdialog builder
@@ -199,6 +186,24 @@ public class LoginActivity extends AppCompatActivity {
             AlertDialog alertDialog = alertDialogBuilder.create();
             // show it
             alertDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            try {
+                Class.forName("net.sourceforge.jtds.jdbc.Driver");
+                String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
+                Connection conn = DriverManager.getConnection(ConnURL);
+                String sql = "insert into dbo.users (Username, Password) values (?, ?)";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setString(1, params[0]);
+                ps.setString(2, params[1]);
+                ps.execute();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
             return true;
         }

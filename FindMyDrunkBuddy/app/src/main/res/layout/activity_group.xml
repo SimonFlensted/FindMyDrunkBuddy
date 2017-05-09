@@ -25,6 +25,7 @@
             android:layout_below="@+id/groupMembers"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="28dp"
+            android:onClick="findAllMembers"
             android:text="Locate All Members" />
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

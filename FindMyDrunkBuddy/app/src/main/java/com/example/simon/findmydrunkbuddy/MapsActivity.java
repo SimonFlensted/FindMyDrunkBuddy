@@ -12,6 +12,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -39,18 +42,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        Intent intent = getIntent();
-
-        User user = (User) intent.getSerializableExtra("User");
-        float userLongtitude = user.getLongtitude();
-        float userLattitude = user.getLattitude();
-        String username = user.getName();
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(userLattitude, userLongtitude);
-        mMap.addMarker(new MarkerOptions().position(sydney).title(username)).showInfoWindow();
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        Intent intent = getIntent();
+
+        ArrayList<User> users = (ArrayList<User>) intent.getSerializableExtra("Users");
+        for(User user : users) {
+            float userLongtitude = user.getLongtitude();
+            float userLattitude = user.getLattitude();
+            String username = user.getName();
+
+            LatLng member = new LatLng(userLattitude, userLongtitude);
+            mMap.addMarker(new MarkerOptions().position(member).title(username)).showInfoWindow();
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(users.get(0).getLattitude(), users.get(0).getLongtitude())));
+            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(users.get(0).getLattitude(), users.get(0).getLongtitude())));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
     }
 }

@@ -43,4 +43,8 @@ public class LocalDatabase extends SQLiteOpenHelper {
                     + "USERNAME TEXT, "
                     + "PASSWORD TEXT);");
     }
+
+    public static void deletePrevious(SQLiteDatabase db) {
+        db.execSQL("delete from USERDATA");
+    }
 }

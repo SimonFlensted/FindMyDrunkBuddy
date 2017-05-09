@@ -1,6 +1,8 @@
 package com.example.simon.findmydrunkbuddy;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +32,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         new Connector(groupName.getText().toString(), groupPassword.getText().toString(), Integer.parseInt(duration.getText().toString())).execute();
     }
 
-    private class Connector extends AsyncTask{
+    private class Connector extends AsyncTask<String, Void, Boolean>{
 
         String groupName;
         String groupPassword;
@@ -43,7 +45,26 @@ public class CreateGroupActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Object doInBackground(Object[] params) {
+        protected void onPostExecute(Boolean b){
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CreateGroupActivity.this);
+
+            // set prompts.xml to alertdialog builder
+            alertDialogBuilder.setMessage("Group created succesfully!");
+
+            // set dialog message
+            alertDialogBuilder.setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            // show it
+            alertDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
             try {
                 Class.forName("net.sourceforge.jtds.jdbc.Driver");
                 String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";

@@ -16,6 +16,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,6 +30,10 @@ public class GroupActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         new Connector().execute(intent.getIntExtra("groupId", 0));
+    }
+
+    public void findAllMembers(View view){
+        new GetAllUserLocations().execute(getIntent().getIntExtra("groupId", 0));
     }
 
     private class Connector extends AsyncTask<Integer, Void, List<User>> {
@@ -82,17 +87,56 @@ public class GroupActivity extends AppCompatActivity {
         }
     }
 
-    private class GetUserLocation extends AsyncTask<Integer, Void, User> {
+    private class GetAllUserLocations extends AsyncTask<Integer, Void, ArrayList<User>> {
 
         @Override
-        protected void onPostExecute(User user) {
+        protected void onPostExecute(ArrayList<User> users) {
                 Intent intent = new Intent(GroupActivity.this, MapsActivity.class);
-                intent.putExtra("User", user);
+                intent.putExtra("Users", users);
                 startActivity(intent);
         }
 
         @Override
-        protected User doInBackground(Integer... UserId) {
+        protected ArrayList<User> doInBackground(Integer... GroupId) {
+            try {
+                Class.forName("net.sourceforge.jtds.jdbc.Driver");
+                String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
+                Connection conn = DriverManager.getConnection(ConnURL);
+                String sql = "select * from dbo.userToGroup join dbo.users on UserId = Id where GroupId = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setInt(1, GroupId[0]);
+                ResultSet rs = ps.executeQuery();
+
+                ArrayList<User> users = new ArrayList<>();
+
+                while(rs.next()){
+                    users.add(new User(rs.getInt("Id"), rs.getString("Username"), rs.getFloat("Lattitude"), rs.getFloat("Longtitude")));
+                }
+                return users;
+
+
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+            return null;
+        }
+    }
+
+    private class GetUserLocation extends AsyncTask<Integer, Void, ArrayList<User>> {
+
+        @Override
+        protected void onPostExecute(ArrayList<User> user) {
+            Intent intent = new Intent(GroupActivity.this, MapsActivity.class);
+            intent.putExtra("Users", user);
+            startActivity(intent);
+        }
+
+        @Override
+        protected ArrayList<User> doInBackground(Integer... UserId) {
             try {
                 Class.forName("net.sourceforge.jtds.jdbc.Driver");
                 String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
@@ -102,10 +146,12 @@ public class GroupActivity extends AppCompatActivity {
                 ps.setInt(1, UserId[0]);
                 ResultSet rs = ps.executeQuery();
 
-                while(rs.next()){
-                    return new User(rs.getInt("Id"), rs.getString("Username"), rs.getFloat("Lattitude"), rs.getFloat("Longtitude"));
-                }
+                ArrayList<User> user = new ArrayList<>();
 
+                while(rs.next()){
+                    user.add(new User(rs.getInt("Id"), rs.getString("Username"), rs.getFloat("Lattitude"), rs.getFloat("Longtitude")));
+                }
+                return user;
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
