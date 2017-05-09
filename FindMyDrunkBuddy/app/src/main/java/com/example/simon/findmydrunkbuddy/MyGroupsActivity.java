@@ -36,6 +36,7 @@ public class MyGroupsActivity extends AppCompatActivity {
 
         private ListView lv = (ListView) findViewById(R.id.myGroups);
         private ArrayAdapter<ListItem> itemsAdapter;
+        private static final String selectFromUserGroup = "select * from dbo.userToGroup utg join dbo.groups g on utg.groupId = g.Id where userId = ?";
 
         protected void onPostExecute(List<ListItem> items) {
             itemsAdapter = new ArrayAdapter<ListItem>(MyGroupsActivity.this, android.R.layout.simple_list_item_1, items);
@@ -68,9 +69,9 @@ public class MyGroupsActivity extends AppCompatActivity {
                 }
 
                 Class.forName("net.sourceforge.jtds.jdbc.Driver");
-                String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
+                String ConnURL = getResources().getString(R.string.connectionURL);
                 Connection conn = DriverManager.getConnection(ConnURL);
-                String sql = "select * from dbo.userToGroup utg join dbo.groups g on utg.groupId = g.Id where userId = ?";
+                String sql = selectFromUserGroup;
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setInt(1, userId);
                 ResultSet rs = ps.executeQuery();

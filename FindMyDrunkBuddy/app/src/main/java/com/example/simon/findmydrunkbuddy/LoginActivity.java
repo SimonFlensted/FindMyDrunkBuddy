@@ -99,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
         private String username;
         private String password;
         private int id;
+        private static final String selectFromUsers = "select * from dbo.users where Username = ? AND Password = ?";
 
         @Override
         protected void onPostExecute(Boolean b){
@@ -143,9 +144,9 @@ public class LoginActivity extends AppCompatActivity {
         protected Boolean doInBackground(String... params) {
             try {
                 Class.forName("net.sourceforge.jtds.jdbc.Driver");
-                String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
+                String ConnURL = getResources().getString(R.string.connectionURL);
                 Connection conn = DriverManager.getConnection(ConnURL);
-                String sql = "select * from dbo.users where Username = ? AND Password = ?";
+                String sql = selectFromUsers;
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, params[0]);
                 ps.setString(2, params[1]);
@@ -168,6 +169,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private class RegisterTask extends AsyncTask<String, Void, Boolean> {
+
+        private static final String insertIntoUsers = "insert into dbo.users (Username, Password) values (?, ?)";
 
         @Override
         protected void onPostExecute(Boolean b){
@@ -192,9 +195,9 @@ public class LoginActivity extends AppCompatActivity {
         protected Boolean doInBackground(String... params) {
             try {
                 Class.forName("net.sourceforge.jtds.jdbc.Driver");
-                String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
+                String ConnURL = getResources().getString(R.string.connectionURL);
                 Connection conn = DriverManager.getConnection(ConnURL);
-                String sql = "insert into dbo.users (Username, Password) values (?, ?)";
+                String sql = insertIntoUsers;
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, params[0]);
                 ps.setString(2, params[1]);

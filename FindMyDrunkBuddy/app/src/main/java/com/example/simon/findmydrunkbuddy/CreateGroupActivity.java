@@ -37,6 +37,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         String groupName;
         String groupPassword;
         int duration;
+        private static final String insertString = "insert into dbo.groups (Name, Duration, Password) values(?, ?, ?)";
 
         public Connector(String groupName, String groupPassword, int duration){
             this.groupName=groupName;
@@ -67,9 +68,9 @@ public class CreateGroupActivity extends AppCompatActivity {
         protected Boolean doInBackground(String... params) {
             try {
                 Class.forName("net.sourceforge.jtds.jdbc.Driver");
-                String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
+                String ConnURL = getResources().getString(R.string.connectionURL);
                 Connection conn = DriverManager.getConnection(ConnURL);
-                String sql = "insert into dbo.groups (Name, Duration, Password) values(?, ?, ?)";
+                String sql = insertString;
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, groupName);
                 ps.setInt(2, duration);

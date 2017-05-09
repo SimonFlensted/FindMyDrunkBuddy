@@ -83,14 +83,16 @@ public class LocationUpdaterService extends Service {
 
                 class SendLocationTask extends AsyncTask<Double, Void, Boolean> {
 
+                    private static final String updateUserPos = "update dbo.users set Lattitude = ?, Longtitude = ? where Id = ?";
+
 
                     @Override
                     protected Boolean doInBackground(Double... params) {
                         try {
                             Class.forName("net.sourceforge.jtds.jdbc.Driver");
-                            String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
+                            String ConnURL = getResources().getString(R.string.connectionURL);
                             Connection conn = DriverManager.getConnection(ConnURL);
-                            String sql = "update dbo.users set Lattitude = ?, Longtitude = ? where Id = ?";
+                            String sql = updateUserPos;
                             PreparedStatement ps = conn.prepareStatement(sql);
                             ps.setDouble(1, params[0]);
                             ps.setDouble(2, params[1]);

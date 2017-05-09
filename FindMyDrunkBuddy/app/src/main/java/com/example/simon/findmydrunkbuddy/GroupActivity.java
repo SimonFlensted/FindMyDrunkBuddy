@@ -128,6 +128,8 @@ public class GroupActivity extends AppCompatActivity {
 
     private class GetUserLocation extends AsyncTask<Integer, Void, ArrayList<User>> {
 
+        private static final String selectFromUsers = "select * from dbo.users where Id = ?";
+
         @Override
         protected void onPostExecute(ArrayList<User> user) {
             Intent intent = new Intent(GroupActivity.this, MapsActivity.class);
@@ -139,9 +141,9 @@ public class GroupActivity extends AppCompatActivity {
         protected ArrayList<User> doInBackground(Integer... UserId) {
             try {
                 Class.forName("net.sourceforge.jtds.jdbc.Driver");
-                String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
+                String ConnURL = getResources().getString(R.string.connectionURL);
                 Connection conn = DriverManager.getConnection(ConnURL);
-                String sql = "select * from dbo.users where Id = ?";
+                String sql = selectFromUsers;
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setInt(1, UserId[0]);
                 ResultSet rs = ps.executeQuery();

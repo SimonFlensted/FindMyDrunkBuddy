@@ -37,7 +37,7 @@ public class FindGroupActivity extends AppCompatActivity {
     }
 
     public void searchGroup(View view){
-        Log.d("go'daw", "jaja");
+
         EditText searchString = (EditText) findViewById(R.id.searchField);
         ArrayAdapter<ListItem> itemsAdapter = null;
         new Connector().execute(searchString.getText().toString());
@@ -48,6 +48,8 @@ public class FindGroupActivity extends AppCompatActivity {
 
         private ListView lv = (ListView) findViewById(R.id.groupList);
         private ArrayAdapter<ListItem> itemsAdapter;
+        private static final String selectFromUserData = "select * from USERDATA";
+        private static final String selectFromGroup = "select * from dbo.groups where Name like ?";
 
         protected void onPostExecute(List<ListItem> items) {
             itemsAdapter = new ArrayAdapter<ListItem>(FindGroupActivity.this, android.R.layout.simple_list_item_1, items);
@@ -73,7 +75,7 @@ public class FindGroupActivity extends AppCompatActivity {
                                 LocalDatabase helper = new LocalDatabase(FindGroupActivity.this);
                                 SQLiteDatabase db = helper.getReadableDatabase();
 
-                                Cursor cursor = db.rawQuery("select * from USERDATA", null);
+                                Cursor cursor = db.rawQuery(selectFromUserData, null);
 
                                 if (cursor.moveToFirst()) {
                                     new insertUserToGroup().execute(cursor.getInt(1), item.getId());
@@ -95,9 +97,9 @@ public class FindGroupActivity extends AppCompatActivity {
         protected List<ListItem> doInBackground(String... searchString) {
             try {
                 Class.forName("net.sourceforge.jtds.jdbc.Driver");
-                String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
+                String ConnURL = getResources().getString(R.string.connectionURL);
                 Connection conn = DriverManager.getConnection(ConnURL);
-                String sql = "select * from dbo.groups where Name like ?";
+                String sql = selectFromGroup;
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, "%" + searchString[0] + "%");
                 ResultSet rs = ps.executeQuery();
@@ -124,13 +126,15 @@ public class FindGroupActivity extends AppCompatActivity {
 
         private class insertUserToGroup extends AsyncTask<Integer, Void, Void>{
 
+            private static final String insertIntoUserGroup = "insert into dbo.userToGroup values (?, ?)";
+
             @Override
             protected Void doInBackground(Integer... params) {
                 try {
                     Class.forName("net.sourceforge.jtds.jdbc.Driver");
-                    String ConnURL = "jdbc:jtds:sqlserver://findmymate.can4eqtlkgly.eu-central-1.rds.amazonaws.com:1433/findMyMate;user=lasif;password=findMyProj";
+                    String ConnURL = getResources().getString(R.string.connectionURL);
                     Connection conn = DriverManager.getConnection(ConnURL);
-                    String sql = "insert into dbo.userToGroup values (?, ?)";
+                    String sql = insertIntoUserGroup;
                     PreparedStatement ps = conn.prepareStatement(sql);
                     ps.setInt(1, params[0]);
                     ps.setInt(2, params[1]);
