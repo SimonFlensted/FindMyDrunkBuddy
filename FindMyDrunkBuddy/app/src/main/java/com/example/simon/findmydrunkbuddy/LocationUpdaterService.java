@@ -121,7 +121,7 @@ public class LocationUpdaterService extends Service {
                 // for ActivityCompat#requestPermissions for more details.
                 return START_STICKY;
             }
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 120000, 50, locationListener);
             return Service.START_STICKY;
         }
         return super.onStartCommand(intent, flags, startId);
