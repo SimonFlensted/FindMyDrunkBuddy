@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v4.util.LogWriter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,7 +40,7 @@ public class FindGroupActivity extends AppCompatActivity {
     public void searchGroup(View view){
 
         EditText searchString = (EditText) findViewById(R.id.searchField);
-        ArrayAdapter<ListItem> itemsAdapter = null;
+        //GroupAdapter itemsAdapter = null;
         new Connector().execute(searchString.getText().toString());
     }
 
@@ -47,18 +48,18 @@ public class FindGroupActivity extends AppCompatActivity {
     private class Connector extends AsyncTask<String, Void, List<ListItem>> {
 
         private ListView lv = (ListView) findViewById(R.id.groupList);
-        private ArrayAdapter<ListItem> itemsAdapter;
+        private GroupAdapter itemsAdapter;
         private static final String selectFromUserData = "select * from USERDATA";
         private static final String selectFromGroup = "select * from dbo.groups where Name like ?";
 
         protected void onPostExecute(List<ListItem> items) {
-            itemsAdapter = new ArrayAdapter<ListItem>(FindGroupActivity.this, android.R.layout.simple_list_item_1, items);
+            itemsAdapter = new GroupAdapter(items);
             lv.setAdapter(itemsAdapter);
 
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    final ListItem item = itemsAdapter.getItem(position);
+                    final ListItem item = (ListItem) itemsAdapter.getItem(position);
 
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(FindGroupActivity.this);
 

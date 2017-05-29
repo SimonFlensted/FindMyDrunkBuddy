@@ -38,8 +38,6 @@ public class LocationUpdaterService extends Service {
     public void onCreate() {
         super.onCreate();
         isRunning = false;
-
-
     }
 
     @Override

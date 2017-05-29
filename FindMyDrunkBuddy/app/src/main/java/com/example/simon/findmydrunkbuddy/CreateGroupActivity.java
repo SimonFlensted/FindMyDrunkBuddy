@@ -67,7 +67,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(String... params) {
             try {
-                Class.forName("net.sourceforge.jtds.jdbc.Driver");
+                //Class.forName("net.sourceforge.jtds.jdbc.Driver");
                 String ConnURL = getResources().getString(R.string.connectionURL);
                 Connection conn = DriverManager.getConnection(ConnURL);
                 String sql = insertString;
@@ -76,8 +76,6 @@ public class CreateGroupActivity extends AppCompatActivity {
                 ps.setInt(2, duration);
                 ps.setString(3, groupPassword);
                 ps.execute();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

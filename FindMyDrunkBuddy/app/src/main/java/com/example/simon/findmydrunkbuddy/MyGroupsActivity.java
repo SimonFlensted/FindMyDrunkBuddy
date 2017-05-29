@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -57,7 +58,7 @@ public class MyGroupsActivity extends AppCompatActivity {
         @Override
         protected List<ListItem> doInBackground(String... searchString) {
             try {
-                LocalDatabase helper = new LocalDatabase(MyGroupsActivity.this);
+                SQLiteOpenHelper helper = new LocalDatabase(MyGroupsActivity.this);
                 SQLiteDatabase db = helper.getReadableDatabase();
 
                 Cursor cursor = db.rawQuery("select * from USERDATA", null);
